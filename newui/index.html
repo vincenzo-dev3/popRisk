@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎈 PopRisk - Push Your Luck Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🎈 POPRISK</h1>
+            <p class="tagline">Push your luck. Don't pop.</p>
+            <p class="tagline-sub">Fully onchain</p>
+            
+            <div class="score-container">
+                <div class="score-display">
+                    <span class="label">ROUND:</span>
+                    <span class="score" id="roundCount">1/5</span>
+                </div>
+                <div class="score-display">
+                    <span class="label">PUMPS:</span>
+                    <span class="score" id="pumpCount">0</span>
+                </div>
+                <div class="score-display">
+                    <span class="label">SCORE:</span>
+                    <span class="score" id="totalScore">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <div class="balloon-container" id="balloonContainer">
+                <div class="balloon" id="balloon">
+                    <div class="balloon-shine"></div>
+                    <div class="balloon-string"></div>
+                </div>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-pump" id="pumpBtn">
+                <span class="btn-text">PUMP</span>
+            </button>
+            <button class="btn btn-collect" id="collectBtn">
+                <span class="btn-text">COLLECT</span>
+            </button>
+        </div>
+
+        <div class="how-to-play">
+            <h2 class="section-title">🎈 HOW TO PLAY</h2>
+            
+            <div class="rule-item">
+                <div class="rule-number">1</div>
+                <div class="rule-content">
+                    <h3>PUMP the balloon to earn points</h3>
+                    <p>• Each pump = bigger rewards</p>
+                    <p>• But risk increases...</p>
+                </div>
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-number">2</div>
+                <div class="rule-content">
+                    <h3>COLLECT anytime to bank your points</h3>
+                    <p>• Safe play = guaranteed score</p>
+                </div>
+            </div>
+
+            <div class="rule-item">
+                <div class="rule-number">3</div>
+                <div class="rule-content">
+                    <h3>Push too far? 💥 POP!</h3>
+                    <p>• Lose all points from that round</p>
+                </div>
+            </div>
+
+            <div class="game-info">
+                <p><strong>Play 5 rounds. Highest score wins.</strong></p>
+                <p class="entry-fee">Entry: 0.001 ETH</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particle container for pop animation -->
+    <div class="particles" id="particles"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
