@@ -120,6 +120,9 @@ export default function Home() {
           appLogoUrl: "https://base.org/logo.png",
           appChainIds: [baseSepolia.id],
           // Quickstart configuration with sub accounts
+          // Auto Spend Permissions are ENABLED BY DEFAULT
+          // First transaction: User approves and grants spend permissions
+          // Subsequent transactions: Execute without user confirmation
           subAccounts: {
             creation: "on-connect",
             defaultAccount: "sub",
@@ -312,26 +315,61 @@ export default function Home() {
     }
 
     setLoading(true);
-    setStatus("🔗 Connecting wallet and creating sub account...");
+    setStatus("🔗 Connecting wallet...");
 
     try {
-      // With quickstart config, this will automatically create a sub account
-      await provider.request({
-        method: "wallet_connect",
-        params: [],
-      });
-
+      // Step 1: Connect and get universal account
       const accounts = (await provider.request({
         method: "eth_requestAccounts",
         params: [],
       })) as string[];
 
-      // With defaultAccount: 'sub', the sub account is the first account
-      const subAddr = accounts[0];
-      const universalAddr = accounts[1];
+      const universalAddr = accounts[0]; // Universal account is FIRST
+      setUniversalAddress(universalAddr);
+      
+      setStatus("🔗 Checking for existing sub account...");
+
+      // Step 2: Check if sub account already exists
+      const response = (await provider.request({
+        method: "wallet_getSubAccounts",
+        params: [{
+          account: universalAddr,
+          domain: window.location.origin,
+        }],
+      })) as { subAccounts: Array<{ address: string }> };
+
+      let subAddr: string;
+
+      if (response.subAccounts && response.subAccounts.length > 0) {
+        // Sub account exists - add it to this session
+        setStatus("🔗 Adding existing sub account to session...");
+        const existingSubAccount = (await provider.request({
+          method: "wallet_addSubAccount",
+          params: [{
+            account: {
+              type: "deployed",
+              address: response.subAccounts[0].address,
+            },
+          }],
+        })) as { address: string };
+        subAddr = existingSubAccount.address;
+        setStatus("✅ Existing sub account connected!");
+      } else {
+        // No sub account - create one (only with on-connect creation mode)
+        setStatus("🔗 Creating new sub account...");
+        const newSubAccount = (await provider.request({
+          method: "wallet_addSubAccount",
+          params: [{
+            account: {
+              type: "create",
+            },
+          }],
+        })) as { address: string };
+        subAddr = newSubAccount.address;
+        setStatus("✅ Sub account created!");
+      }
 
       setSubAccountAddress(subAddr);
-      setUniversalAddress(universalAddr);
       setConnected(true);
       
       // Set 2-hour session expiry
