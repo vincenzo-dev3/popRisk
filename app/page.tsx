@@ -5,8 +5,9 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { baseSepolia } from "viem/chains";
 import { encodeFunctionData, parseEther, formatEther } from "viem";
 
-// BalloonGame contract address on Base Sepolia
-const BALLOON_GAME_ADDRESS = "0xFFD623B4E560d49b0Cd838be2d5C7aFD1D7c58d6";
+// BalloonGame contract address on Base Sepolia (ETH-based version)
+// ✅ Verified deployed contract from c.md documentation
+const BALLOON_GAME_ADDRESS = "0x172Aee5D51D231DBFa9C0F5E09E68237471b185c";
 
 // BalloonGame contract ABI
 const BALLOON_GAME_ABI = [
@@ -653,11 +654,11 @@ export default function Home() {
         errorMsg = String((error as any).message);
       }
       
-      // Check if balloon popped
-      // Pump 3+ always pops, OR check for pop-related error messages
-      const isPoppedError = newPumpCount >= 3 || 
-                           errorMsg.toLowerCase().includes("popped") || 
+      // Check if balloon popped (contract uses random probability after pump 3)
+      // Don't assume it ALWAYS pops at 3 - check for actual pop errors from contract
+      const isPoppedError = errorMsg.toLowerCase().includes("popped") || 
                            errorMsg.toLowerCase().includes("balloon popped") ||
+                           errorMsg.toLowerCase().includes("execution reverted") ||
                            errorMsg.toLowerCase().includes("game over");
       
       if (isPoppedError) {
