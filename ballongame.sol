@@ -84,19 +84,20 @@ contract BalloonGame is ReentrancyGuard {
     
     /**
      * @dev Pump the balloon to earn points
-     * Risk of balloon popping increases with each pump after the 3rd
+     * Maximum 2 pumps per round - 3rd pump is blocked!
      */
     function pumpBalloon() external {
         GameState storage game = games[msg.sender];
         require(game.isActive, "No active game");
         require(game.currentRound <= MAX_ROUNDS, "Game completed");
+        require(game.pumpCount < 2, "Max 2 pumps per round! Collect points to continue.");
         
         // Increment pump count
         game.pumpCount++;
         
         // Calculate points for this pump
         // Formula: 10 * (2^(pumpCount-1))
-        // pump 1=10, pump 2=20, pump 3=40, pump 4=80, etc.
+        // pump 1=10, pump 2=20
         uint256 earnedPoints = 10 * (2 ** (game.pumpCount - 1));
         game.pendingPoints += earnedPoints;
         
@@ -107,29 +108,7 @@ contract BalloonGame is ReentrancyGuard {
             earnedPoints
         );
         
-        // Check for balloon pop after 3rd pump
-        if (game.pumpCount >= MIN_PUMPS_BEFORE_POP) {
-            if (_checkBalloonPop(game.pumpCount)) {
-                // Balloon popped! Lose pending points
-                uint256 lostPoints = game.pendingPoints;
-                
-                emit BalloonPopped(
-                    msg.sender,
-                    game.currentRound,
-                    lostPoints
-                );
-                
-                // Reset for next round or end game
-                if (game.currentRound < MAX_ROUNDS) {
-                    game.currentRound++;
-                    game.pumpCount = 0;
-                    game.pendingPoints = 0;
-                } else {
-                    // Game over
-                    _endGame(msg.sender);
-                }
-            }
-        }
+        // No pop check needed - we prevent 3rd pump entirely!
     }
     
     /**
@@ -164,29 +143,17 @@ contract BalloonGame is ReentrancyGuard {
     /**
      * @dev Internal function to check if balloon pops
      * Uses block hash for randomness
-     * Pop probability: 1 in (10 - pumpCount) after 3rd pump
+     * Balloon ALWAYS pops at 3rd pump (max threshold = 3)
      * @param pumpCount Current number of pumps
      */
-    function _checkBalloonPop(uint256 pumpCount) private view returns (bool) {
-        // Get pseudo-random number from block hash
-        uint256 randomValue = uint256(
-            keccak256(abi.encodePacked(block.prevrandao, block.timestamp, msg.sender, pumpCount))
-        ) % 100;
-        
-        // Calculate pop probability
-        // After pump 3: 1 in 7 (~14%)
-        // After pump 4: 1 in 6 (~17%)
-        // After pump 5: 1 in 5 (20%)
-        // etc.
-        uint256 threshold;
-        if (pumpCount >= 10) {
-            threshold = 100; // Always pop at 10+ pumps
-        } else {
-            // Calculate threshold: (100 / (11 - pumpCount))
-            threshold = 100 / (11 - pumpCount);
+    function _checkBalloonPop(uint256 pumpCount) private pure returns (bool) {
+        // Always pop at 3 or more pumps
+        if (pumpCount >= 3) {
+            return true; // 100% pop at 3+ pumps
         }
         
-        return randomValue < threshold;
+        // Pumps 1-2 are safe
+        return false;
     }
     
     /**

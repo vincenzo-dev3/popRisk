@@ -5,9 +5,8 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { baseSepolia } from "viem/chains";
 import { encodeFunctionData, parseEther, formatEther } from "viem";
 
-// BalloonGame contract address on Base Sepolia (ETH-based version)
-// ✅ Verified deployed contract from c.md documentation
-const BALLOON_GAME_ADDRESS = "0x172Aee5D51D231DBFa9C0F5E09E68237471b185c";
+// BalloonGame contract address on Base Sepolia (Latest deployment)
+const BALLOON_GAME_ADDRESS = "0xFFD623B4E560d49b0Cd838be2d5C7aFD1D7c58d6";
 
 // BalloonGame contract ABI
 const BALLOON_GAME_ABI = [
