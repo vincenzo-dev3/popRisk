@@ -807,7 +807,7 @@ export default function Home() {
     setStatus("💰 Sending ETH to Sub Account...");
 
     try {
-      const fundAmount = parseEther("0.01"); // Send 0.01 ETH
+      const fundAmount = parseEther("0.0011"); // Send 0.0011 ETH
       const fundAmountHex = `0x${fundAmount.toString(16)}`;
 
       // Send ETH from Universal Account to Sub Account
@@ -823,14 +823,14 @@ export default function Home() {
       });
 
       const txHashStr = String(txHash);
-      setStatus(`✅ Funded! Sent 0.01 ETH to Sub Account. TX: ${txHashStr.slice(0, 10)}...`);
+      setStatus(`✅ Funded! Sent 0.0011 ETH to Sub Account. TX: ${txHashStr.slice(0, 10)}...`);
       
       // Add to transaction history
       setTransactionHistory(prev => [{
         type: "Fund",
         hash: txHashStr,
         timestamp: new Date(),
-        description: "Funded Sub Account with 0.01 ETH",
+        description: "Funded Sub Account with 0.0011 ETH",
         isBundled: false // This is a direct eth_sendTransaction, has real tx hash
       }, ...prev]);
       
@@ -928,11 +928,11 @@ export default function Home() {
                     <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
                       <button
                         onClick={fundSubAccount}
-                        disabled={loading || parseFloat(universalBalance) < 0.015}
+                        disabled={loading || parseFloat(universalBalance) < 0.0011}
                         className="button"
                         style={{ flex: 1, padding: "10px 16px", fontSize: "0.95rem", background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" }}
                       >
-                        {loading ? "Sending..." : "💰 Fund Sub Account (0.01 ETH)"}
+                        {loading ? "Sending..." : "💰 Fund Sub Account (0.0011 ETH)"}
                       </button>
                       <button
                         onClick={() => {
@@ -946,11 +946,6 @@ export default function Home() {
                         📋
                       </button>
                     </div>
-                    {parseFloat(universalBalance) < 0.015 && (
-                      <p style={{ fontSize: "0.8rem", marginTop: "8px", opacity: 0.9, color: "#ffcc00" }}>
-                        ⚠️ Universal Account needs at least 0.015 ETH to fund Sub Account
-                      </p>
-                    )}
               </div>
                 )}
                 
