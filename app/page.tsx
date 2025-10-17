@@ -951,7 +951,7 @@ export default function Home() {
                 
                 <button
                   onClick={startNewGame}
-                  disabled={loading || parseFloat(subBalance) < 0.002}
+                  disabled={loading || parseFloat(subBalance) < 0.0011}
                   className="button button-primary"
                 >
                   {loading ? "Starting..." : "🎮 Start New Game (0.001 ETH)"}
