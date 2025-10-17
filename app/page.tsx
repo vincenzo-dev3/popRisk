@@ -120,6 +120,9 @@ export default function Home() {
           appLogoUrl: "https://base.org/logo.png",
           appChainIds: [baseSepolia.id],
           // Quickstart configuration with sub accounts
+          // Auto Spend Permissions are ENABLED BY DEFAULT
+          // First transaction: User approves and grants spend permissions
+          // Subsequent transactions: Execute without user confirmation
           subAccounts: {
             creation: "on-connect",
             defaultAccount: "sub",
